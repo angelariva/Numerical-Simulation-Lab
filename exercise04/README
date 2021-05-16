@@ -1,0 +1,27 @@
+From shell, inside _code_ directory:
+- To compile: `make`
+
+To obtain the results required in the exercise, from shell,
+inside _this_ directory:
+- To execute the first program: `./ex1.sh`
+- To execute the second program: `./ex2.sh`
+
+There's no need of changing the input files or creating new directories:
+the scripts provided should take care of everything. The scripts set also
+the values of the input file. To change the input values the best option
+could be to modify the scripts themselves.
+
+Inside the _code_ directory it is also possible to run independent simulations.
+You can modify the parameters of these simulations by changing the file
+input.dat.
+
+To run the first simulation:
+
+./main --equilibration input.dat
+
+Then the next simulations can be performed with:
+
+./main --restart input.dat
+
+When the system is equilibrated (some restarts will be needed), you can run
+a final --restart with a big number of sample points.

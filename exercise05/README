@@ -1,0 +1,32 @@
+From shell, inside _this_ directory:
+- To compile: `make`
+- To run the program there are several options:
+
+USAGE: ./main [option1] [options2]
+
+EXAMPLE 1: ./main --pos+rad 1.22 2.94 1.5 3.7
+EXAMPLE 2: ./main --far 1.22 2.94 1.5 3.7
+
+OPTION 1:
+        --help        to print out this help message;
+
+        --pos         to print on file the positions sampled;
+        --rad         to print on file the average radius;
+        --pos+rad     to print on file the pos sampled & av radius;
+        --far         to print on file the pos sampled from a position
+                      far, far away from the origin.
+
+OPTIONs 2, in the following order:
+
+      [step100unif] [step210unif] [step100gaus] [step210gaus]
+
+      Double values to set the STEP of:
+
+      [step100unif]:  ground state distribution with uniform transition
+                      probability;
+      [step210unif]:  first excited state distribution with uniform transition
+                      probability;
+      [step100gaus]:  ground state distribution with gaussian transition
+                      probability;
+      [step210gaus]:  first excited state distribution with gaussian transition
+                      probability.

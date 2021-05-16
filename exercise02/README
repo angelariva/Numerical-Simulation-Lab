@@ -1,0 +1,3 @@
+From shell, inside _this_ directory:
+- To compile: `make`
+- To run the programs: `./execute.sh`
