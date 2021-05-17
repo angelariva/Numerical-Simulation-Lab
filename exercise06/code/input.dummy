@@ -1,0 +1,15 @@
+temp_dummy
+50
+1.0
+h_dummy
+metro_dummy
+nblk_dummy
+nstep_dummy
+
+  ReadInput >> temp;
+  ReadInput >> nspin;
+  ReadInput >> J;
+  ReadInput >> h;
+  ReadInput >> metro;
+  ReadInput >> nblk;
+  ReadInput >> nstep;
