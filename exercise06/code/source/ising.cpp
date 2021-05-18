@@ -21,10 +21,10 @@ Ising1D::Ising1D(std::string old_configuration) {
   }
 
   if(old_configuration=="") { //start from random config
-    Ene.open("outputs/ene.dat");   //delete content of file
+/*    Ene.open("outputs/ene.dat");   //delete content of file
     Heat.open("outputs/heat.dat");
     Mag.open("outputs/mag.dat");
-    Chi.open("outputs/chi.dat");
+    Chi.open("outputs/chi.dat");*/
     //initial configuration
     s.resize(n_spin);
     for(auto& it : s){
@@ -32,10 +32,10 @@ Ising1D::Ising1D(std::string old_configuration) {
         else it = -1;
     }
   }else{
-    Ene.open("outputs/ene.dat", std::ios::app);
+/*    Ene.open("outputs/ene.dat", std::ios::app);
     Heat.open("outputs/heat.dat", std::ios::app);
     Mag.open("outputs/mag.dat", std::ios::app);
-    Chi.open("outputs/chi.dat", std::ios::app);
+    Chi.open("outputs/chi.dat", std::ios::app);*/
     std::ifstream input_file(old_configuration);
     if(input_file.fail()){
           std::cout << "Unable to open " << old_configuration << "\n";
@@ -124,7 +124,7 @@ void Ising1D::Input()  {
 }
 
 
-void Ising1D::Measure()
+void Ising1D::Measure(int step)
 {
   // int bin;
   double u = 0.0, m = 0.0;
@@ -139,6 +139,24 @@ void Ising1D::Measure()
   walker.at("capacity") = u*u;
   walker.at("magnetization") = m;
   walker.at("susceptibility") = m*m;
+
+  if(step !=0) {
+    std::ofstream EneIn, CapIn, MagIn, SusIn;
+    EneIn.open("results/instant.ene.0",std::ios::app);
+    CapIn.open("results/instant.cap.0",std::ios::app);
+    MagIn.open("results/instant.mag.0",std::ios::app);
+    SusIn.open("results/instant.sus.0",std::ios::app);
+
+    EneIn << step << " " << walker.at("energy") << std::endl;
+    CapIn << step << " " << walker.at("capacity") << std::endl;
+    MagIn << step << " " << walker.at("magnetization") << std::endl;
+    SusIn << step << " " << walker.at("susceptibility") << std::endl;
+
+    EneIn.close();
+    CapIn.close();
+    MagIn.close();
+    SusIn.close();
+  }
 }
 
 void Ising1D::Reset(unsigned int iblk) {
@@ -259,7 +277,7 @@ void Ising1D::GibbsMove() {
   attempted++;
 }
 
-void Ising1D::Run() {
+void Ising1D::Run(bool instant) {
   Input(); //Inizialization
   for(int iblk=1; iblk <= nblk; ++iblk) //Simulation
   {
@@ -267,7 +285,8 @@ void Ising1D::Run() {
     for(int istep=1; istep <= nstep; ++istep)
     {
       (*this.*Move)();
-      Measure();
+      if(instant) Measure(istep);
+      else Measure();
       Accumulate(); //Update block averages
     }
     BlockAverages(iblk);   //Print results for current block

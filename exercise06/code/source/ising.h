@@ -45,7 +45,7 @@ private:
   void Accumulate();
   void BlockAverages(unsigned int);
   void ConfFinal();
-  void Measure();
+  void Measure(int step=0);
 
   // pointer to be set to the correct sampling method,
   // either Gibbs or Metropolis!
@@ -69,8 +69,8 @@ public:
   Ising1D(std::string old_configuration="");
   ~Ising1D();
 
-  // run the simulation
-  void Run();
+  // run the simulation (default is NOT to print instant values)
+  void Run(bool instant=false);
 };
 
 /************************************************/
