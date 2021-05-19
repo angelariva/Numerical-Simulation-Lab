@@ -38,7 +38,7 @@ private:
   // simulation
   int nstep, nblk, metro;
   //output files
-  std::ofstream Ene, Heat, Mag, Chi;
+//  std::ofstream Ene, Heat, Mag, Chi;
 
   void Input();
   void Reset(unsigned int);

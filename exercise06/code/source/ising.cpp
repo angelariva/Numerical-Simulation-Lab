@@ -21,10 +21,6 @@ Ising1D::Ising1D(std::string old_configuration) {
   }
 
   if(old_configuration=="") { //start from random config
-/*    Ene.open("outputs/ene.dat");   //delete content of file
-    Heat.open("outputs/heat.dat");
-    Mag.open("outputs/mag.dat");
-    Chi.open("outputs/chi.dat");*/
     //initial configuration
     s.resize(n_spin);
     for(auto& it : s){
@@ -32,10 +28,6 @@ Ising1D::Ising1D(std::string old_configuration) {
         else it = -1;
     }
   }else{
-/*    Ene.open("outputs/ene.dat", std::ios::app);
-    Heat.open("outputs/heat.dat", std::ios::app);
-    Mag.open("outputs/mag.dat", std::ios::app);
-    Chi.open("outputs/chi.dat", std::ios::app);*/
     std::ifstream input_file(old_configuration);
     if(input_file.fail()){
           std::cout << "Unable to open " << old_configuration << "\n";
@@ -66,10 +58,7 @@ Ising1D::Ising1D(std::string old_configuration) {
 }
 
 Ising1D::~Ising1D() {
-  Ene.close();
-  Heat.close();
-  Mag.close();
-  Chi.close();
+
 }
 
 
@@ -141,6 +130,7 @@ void Ising1D::Measure(int step)
   walker.at("susceptibility") = m*m;
 
   if(step !=0) {
+//    std::cout << "Acceptance rate " << accepted/attempted << std::endl << std::endl;
     std::ofstream EneIn, CapIn, MagIn, SusIn;
     EneIn.open("results/instant.ene.0",std::ios::app);
     CapIn.open("results/instant.cap.0",std::ios::app);
@@ -191,45 +181,52 @@ void Ising1D::Accumulate(void) {
 void Ising1D::BlockAverages(unsigned int iblk) {
   //Print results for current block
   std::ofstream Ene, Heat, Mag, Chi;
+  Ene.open("results/ene.dat", std::ios::app);   //delete content of file
+  Heat.open("results/heat.dat", std::ios::app);
+  Mag.open("results/mag.dat", std::ios::app);
+  Chi.open("results/chi.dat", std::ios::app);
 
   std::cout << "Block number " << iblk << std::endl;
   std::cout << "Acceptance rate " << accepted/attempted << std::endl << std::endl;
 
-  Ene.open("results/output.ene.0",std::ios::app);  // Energy
   stima_u = block_average.at("energy")/blk_norm/(double)n_spin;
   glob_average.at("energy")  += stima_u;
   glob_average2.at("energy") += stima_u*stima_u;
   err_u = Error(glob_average.at("energy"), glob_average2.at("energy"), iblk);
-  Ene << " " << iblk <<  " " << stima_u << " "
-  << glob_average.at("energy")/(double)iblk << " " << err_u << std::endl;
+  Ene << " " << iblk << " " << glob_average.at("energy")/(double)iblk
+      << " " << err_u << std::endl;
   Ene.close();
 
-  Heat.open("results/output.heat.0",std::ios::app);  // Heat capacity
-  stima_c = beta*beta*(block_average.at("capacity")/blk_norm);
+  stima_c = block_average.at("capacity")/blk_norm/(double)n_spin;
   stima_c = (stima_c-stima_u*stima_u*(double)n_spin)/(temp*temp);
+//  stima_c = beta*beta*((block_average.at("capacity")/blk_norm) -(std::pow(block_average.at("energy"),2)/blk_norm));
+//  stima_c /= (double)n_spin;
   glob_average.at("capacity")  += stima_c;
   glob_average2.at("capacity") += stima_c*stima_c;
   err_c = Error(glob_average.at("capacity"), glob_average2.at("capacity"), iblk);
-  Heat << " " << iblk <<  " " << stima_c << " "
-  << glob_average.at("capacity")/(double)iblk << " " << err_c << std::endl;
+  Heat << " " << iblk << " " << glob_average.at("capacity")/(double)iblk
+       << " " << err_c << std::endl;
   Heat.close();
 
-  Mag.open("results/output.mag.0",std::ios::app);  // Magnetization
   stima_m = block_average["magnetization"]/blk_norm/(double)n_spin;
   glob_average.at("magnetization")  += stima_m;
   glob_average2.at("magnetization") += stima_m*stima_m;
   err_m = Error(glob_average.at("magnetization"), glob_average2.at("magnetization"), iblk);
-  Mag << " " << iblk <<  " " << stima_m << " " << glob_average.at("magnetization")/(double)iblk
-  << " " << err_m << std::endl;
+  Mag << " " << iblk << " " << glob_average.at("magnetization")/(double)iblk
+      << " " << err_m << std::endl;
   Mag.close();
 
-  Chi.open("results/output.chi.0",std::ios::app);  // susceptibility
+  if(h!=0)
+        stima_x = 0;
+    else
+        stima_x = block_average.at("susceptibility")/blk_norm/(double)n_spin/temp;
+
   stima_x = beta*block_average.at("susceptibility")/blk_norm/(double)n_spin;
   glob_average.at("susceptibility")  += stima_x;
   glob_average2.at("susceptibility") += stima_x*stima_x;
   err_x = Error(glob_average.at("susceptibility"), glob_average2.at("susceptibility"), iblk);
-  Chi << " " << iblk <<  " " << stima_x << " " << glob_average.at("susceptibility")/(double)iblk
-  << " " << err_x << std::endl;
+  Chi << " " << iblk << " " << glob_average.at("susceptibility")/(double)iblk
+      << " " << err_x << std::endl;
   Chi.close();
 }
 
@@ -245,36 +242,42 @@ void Ising1D::ConfFinal(void) {
   rnd.SaveSeed();
 }
 
+
 void Ising1D::MetropolisMove() {
   int flip;
-  double deltaen, Q;
+  double en, r;
 
-  //Select randomly a particle (for C++ syntax, 0 <= flip <= n_spin-1)
-  flip = (int)(rnd.Rannyu()*n_spin);
-  deltaen = -2*Boltzmann(s[flip], flip);
-  Q = std::exp(-beta*deltaen);
-  double A = std::min(1., Q);
-  if(rnd.Rannyu() <= A) {
-    s[flip] = -s[flip];
-    accepted++;
+  for(unsigned int i=0; i<n_spin; ++i) {
+    //Select randomly a particle (for C++ syntax, 0 <= flip <= n_spin-1)
+    flip = (int)(rnd.Rannyu()*n_spin);
+    en = -2*Boltzmann(s[flip], flip);
+    en = std::exp(-beta*en);
+    double A = std::min(1., en);
+    r = rnd.Rannyu();
+    if(r < A) {
+      s[flip] = -s[flip];
+      accepted++;
+    }
+    attempted++;
   }
-  attempted++;
 }
 
 void Ising1D::GibbsMove() {
   int flip;
-  double p, deltaen1, deltaen2, Q;
-  //Select randomly a particle (for C++ syntax, 0 <= o <= n_spin-1)
-  flip = (int)(rnd.Rannyu()*n_spin);
-  deltaen1 = -2.*Boltzmann(1, flip);
-  deltaen2 = -2.*Boltzmann(-1,flip);
-  Q = std::exp(-beta*deltaen1)  + std::exp(-beta*deltaen2);
-  p = 1./(1.+Q);
-  if(rnd.Rannyu() <= p){
-    s[flip] = 1.;
+  double p, en1, en2, Q, r;
+  for(unsigned int i=0; i<n_spin; ++i) {
+    //Select randomly a particle (for C++ syntax, 0 <= o <= n_spin-1)
+    flip = (int)(rnd.Rannyu()*n_spin);
+    en1 = Boltzmann(1, flip);
+    en2 = Boltzmann(-1,flip);
+    Q = std::exp(-beta*en1)  + std::exp(-beta*en2);
+    p = std::exp(-beta*en1)/Q;
+    r=rnd.Rannyu();
+    if(p>r) s[flip] = 1.;
+    else s[flip] = -1.;
     accepted++;
-  } else s[flip] = -1.;
-  attempted++;
+    attempted++;
+  }
 }
 
 void Ising1D::Run(bool instant) {

@@ -27,7 +27,7 @@ int main(int argc, char** argv) {
     }
     else if(std::string(argv[1])=="--equilibration"){
         Ising1D ising;
-        ising.Run(true);
+        ising.Run();
     }
     else
         std::cout << "\nUnrecognized option '" << argv[1] << "'\n" <<
