@@ -1,0 +1,19 @@
+temp
+npart
+rho
+rcut
+delta
+nstep
+iprint
+measure_time_interval
+n_blocks
+
+  ReadInput >> temp;
+  ReadInput >> npart;
+  ReadInput >> rho;
+  ReadInput >> rcut;
+  ReadInput >> delta;
+  ReadInput >> nstep;
+  ReadInput >> iprint;
+  ReadInput >> measure_time_interval;
+  ReadInput >> n_blocks;

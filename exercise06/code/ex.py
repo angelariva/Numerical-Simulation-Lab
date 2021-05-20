@@ -68,7 +68,7 @@ def job_launcher(pwd, path, temp_range, params,h, iterations):
         f.close()
         for j in range(iterations):
             if j == 0:
-                subprocess.run(["./main", "--equilibration"], stdout=subprocess.PIPE)
+                subprocess.run(["./main", "--first"], stdout=subprocess.PIPE)
             else:
                 subprocess.run(["./main", "--restart"], stdout=subprocess.PIPE)
         if h==0:

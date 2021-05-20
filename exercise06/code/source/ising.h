@@ -61,9 +61,7 @@ private:
 public:
   // The constructor of the model can start from a previous configuration;
   // the default option is that no configuration file is provided: in this
-  // case the values of the spins are selected randomly & the system is
-  // equilibrated: the alogrithm is moved for some steps, to allow the
-  // temperature to reach a value of equilibrium.
+  // case the values of the spins are selected randomly.
   // the constructor makes use of a file "input.dat" where the Simulation
   // parameters are specified.
   Ising1D(std::string old_configuration="");

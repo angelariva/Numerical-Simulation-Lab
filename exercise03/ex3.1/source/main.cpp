@@ -47,8 +47,8 @@ int main (int argc, char *argv[]){
   for(unsigned int i=0; i<N; i++) {
     double call=0., put=0.;
     for(int j=0; j<L; j++) {
-      double WT = rnd.Gauss(0.,1.);
-      double ST = S0*exp((r-sigma*sigma*0.5)*T+sigma*WT*sqrt(T));
+      double WT = rnd.Gauss(0.,T);
+      double ST = S0*exp((r-sigma*sigma*0.5)*T+sigma*WT);
       if(ST>K) call += (ST-K)*exp(-r*T);
       else put += (K-ST)*exp(-r*T);
     }
