@@ -15,7 +15,7 @@ using namespace std;
 void usage() {
   cout << endl;
   cout << "This program performs a molecular dynamics simulation in NVE ensemble;" << endl;
-  cout << "Usage : " << "./main [inputfile] [option2] " << endl;
+  cout << "Usage : " << "./main [option1] [option2] " << endl;
   cout << "option1: " << endl;
   cout << "   --equilibration     " << ": starts from the configuration in config.0"  << endl;
   cout << "   --restart           " << ": starts from configuration in old.0 " << endl;

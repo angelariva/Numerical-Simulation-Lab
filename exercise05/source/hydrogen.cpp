@@ -81,7 +81,7 @@ double hydrogen::ground_state(double u, double v, double w) {
 
 double hydrogen::exc_state_1(double u, double v, double w) {
   double r = u*u + v*v + w*w;
-  return std::exp(-std::sqrt(r))*w*w/(32.*M_PI);
+  return std::exp(-std::sqrt(r))*r*r/(32.*M_PI);
 }
 
 void hydrogen::uniform_distr() {

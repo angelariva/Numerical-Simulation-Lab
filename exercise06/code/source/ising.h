@@ -19,7 +19,7 @@ private:
   // - magnetization
   // - susceptibility
   std::vector<std::string> props;
-  int seed[4];
+  int seed[4]; // to initialize the random number generator
   std::map<std::string, double> walker;
   // for blocking method averages:
   std::map<std::string, double> block_average;

@@ -164,9 +164,9 @@ void Ising1D::Reset(unsigned int iblk) {
 
    for(auto & el : props) block_average.at(el) = 0.;
 
-   blk_norm = 0;
-   attempted = 0;
-   accepted = 0;
+   blk_norm = 0.;
+   attempted = 0.;
+   accepted = 0.;
 }
 
 void Ising1D::Accumulate(void) {
@@ -217,7 +217,7 @@ void Ising1D::BlockAverages(unsigned int iblk) {
   Mag.close();
 
   if(h!=0)
-        stima_x = 0;
+        stima_x = 0.;
     else
         stima_x = block_average.at("susceptibility")/blk_norm/(double)n_spin/temp;
 

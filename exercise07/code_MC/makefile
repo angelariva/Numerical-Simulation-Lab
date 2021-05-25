@@ -1,6 +1,6 @@
-CXXFLAGS := $(CXXFLAGS) -std=c++11  -Ofast -Wall
+CXXFLAGS := $(CXXFLAGS) -std=c++11  -O3 -Wall
 #it allows to put object files in a subfolder
-obj=$(patsubst %.o,$(OBJPATH)%.o, random.o main.o library.o MolDyn_NVE.o)
+obj=$(patsubst %.o,$(OBJPATH)%.o, random.o main.o montecarlo.o)
 
 		#source path
 VPATH=./source/

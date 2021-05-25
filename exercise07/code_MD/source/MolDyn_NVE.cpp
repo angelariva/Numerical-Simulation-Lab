@@ -5,7 +5,7 @@ using namespace std;
 MolecularDynamics::MolecularDynamics(std::string simParameters, std::string configFile) {
 
   Input(simParameters);
-
+  keys = {"energy", "pressure"};
   // Read initial configuration from the configuration file
   // we are starting from scratch our simulation in this CONSTRUCTOR
   cout << "Read initial configuration from file " + configFile << endl << endl;
@@ -56,13 +56,19 @@ MolecularDynamics::MolecularDynamics(std::string simParameters, std::string conf
        yold[i] = Pbc(y[i] - vy[i] * delta);
        zold[i] = Pbc(z[i] - vz[i] * delta);
    }
+
+   histo.resize(nbins);
+   for(auto & it : histo){
+     it.resize(n_blocks);
+     std::fill(it.begin(), it.end(), 0.);
+   }
 }
 
 MolecularDynamics::MolecularDynamics(std::string simParameters,
                                      std::string configFile,
                                      std::string oldConfigFile) {
   Input(simParameters);
-
+  keys = {"energy", "pressure"};
   // Read initial configuration from the configuration file (final in this case!)
   cout << "Read initial configuration from file " + configFile << endl << endl;
 
@@ -127,6 +133,12 @@ MolecularDynamics::MolecularDynamics(std::string simParameters,
        y[i] = yi;
        z[i] = zi;
 
+   }
+
+   histo.resize(nbins);
+   for(auto & it : histo){
+     it.resize(n_blocks);
+     std::fill(it.begin(), it.end(), 0.);
    }
 }
 
@@ -194,7 +206,6 @@ void MolecularDynamics::Input(std::string simParameters) {
   ReadInput >> measure_time_interval;
   cout << "Measures performed every " << measure_time_interval <<
   " time steps." << endl;
-  unsigned int n_blocks;
   ReadInput >> n_blocks;
   std::cout <<"Statistical error computed with "<< n_blocks << " blocks." << endl << endl;
 
@@ -315,6 +326,16 @@ void MolecularDynamics::Measure(){
      dr = dx*dx + dy*dy + dz*dz;
      dr = sqrt(dr);
 
+     double r;
+     //update of the histogram of g(r)
+     for (unsigned int k=0; k<nbins; ++k){
+       if(dr>bin_size*k and dr<bin_size*(k+1)){
+         r=std::sqrt(x[j]*x[j]+y[j]*y[j]+z[j]*z[j]);
+         histo[k][iblock]+=1./(std::pow(r+dr,3)-std::pow(r,3));
+         break;
+       }
+     }
+
      if(dr < rcut){
        // Potential energy
        v += 4.0/pow(dr,12) - 4.0/pow(dr,6);
@@ -355,16 +376,37 @@ void MolecularDynamics::BlockingResults() {
   for(auto &el : est_temp) el /= block_size;
   for(auto &el : est_etot) el /= block_size;
   for(auto &el : est_press) el /= block_size;
+  for(auto &el : histo) {
+    for(auto & k : el) k /= block_size;
+  }
 
   vector<double> pot_err = blocking_error(est_pot);
   vector<double> kin_err = blocking_error(est_kin);
   vector<double> temp_err = blocking_error(est_temp);
   vector<double> etot_err = blocking_error(est_etot);
   vector<double> press_err = blocking_error(est_press);
+  std::vector<std::vector<double> > histo_err(histo.size());
+  for (unsigned int i=0; i<histo.size(); i++){
+    histo_err[i]=blocking_error(histo[i]);
+  }
+
+  Gerr.open("results/gerr.dat"),
+  Gave.open("results/gave.dat");
+
+  for(unsigned int i=0; i<histo[0].size();i++) {
+    for(unsigned j = 0; j<histo.size(); ++j) {
+      Gave <<histo[j][i] << " ";
+      Gerr << histo_err[j][i] << " ";
+    }
+    Gave << std::endl;
+    Gerr << std::endl;
+  }
+  Gerr.close();
+  Gave.close();
 
   ofstream out("results/ave_epot.dat");
   for(unsigned int i=0; i<est_pot.size(); ++i)
-     out << i << " " << est_pot[i] << " " << pot_err[i] << endl;
+  out << i << " " << est_pot[i] << " " << pot_err[i] << endl;
   out.close();
 
   out.open("results/ave_ekin.dat");

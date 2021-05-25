@@ -4,6 +4,7 @@
 #include <string>
 #include <cmath>
 #include <fstream>
+#include <map>
 #include <iostream>
 #include "random.h"
 #include "library.h"
@@ -29,8 +30,10 @@ class MolecularDynamics {
     unsigned int block_size;
     // actual filling block (counterss)
     unsigned int imeasure, iblock;
+    // # of blocks
+    unsigned int n_blocks;
     //output streams
-    std::ofstream Epot, Ekin, Etot, Temp, Press;
+    std::ofstream Epot, Ekin, Etot, Temp, Press, Gave, Gerr;
 
     // configuration:
     // positions, old positions, velocities, forces acting on each particle
@@ -39,6 +42,18 @@ class MolecularDynamics {
     double stima_pot, stima_kin, stima_etot, stima_temp, stima_press;
     // vectors to get the blocking average:
     std::vector<double> est_pot, est_kin, est_etot, est_temp, est_press;
+
+    // to compute g(r) (you need histograms):
+    // for blocking method averages:
+    std::vector<std::vector <double> > histo;
+    const unsigned int nbins = 100;
+    double bin_size;
+    //maps for energy and pressure
+    std::vector<std::string> keys;
+    std::map<std::string, double> walker;
+    std::map<std::string, double> block_average;
+    std::map<std::string, double> global_average, global_average2;
+
 
     // functions: I declare them as private because I will only call them
     // from methods inside the class itself

@@ -1,0 +1,12 @@
+From shell, inside `/code_MC` directory:
+- To compile: `make`;
+
+From shell, inside _this_ directory:
+- To run the first program: `./ex1.sh`;
+- To run the second program: `./ex2.sh`;
+
+From shell, inside `/code_MD` directory:
+- To compile: `make`;
+
+From shell, inside _this_ directory:
+- To run the third program: `./ex3.sh`.
