@@ -1,6 +1,6 @@
 #!/bin/bash
 
-
+rm -r ex4.2
 mkdir -p ex4.2
 
 cp code/input.dummy code/input.gas
@@ -56,8 +56,8 @@ do
     else
       ./main --restart input.$state
     fi
-    mv -r results results$irnd
-    mkdir results
+    mv results results$irnd
+    mkdir -p results
   done
   cd ..
   cd ..
@@ -69,10 +69,10 @@ sed -i 's/npart/108/g' ex4.2/gas/input.gas
 sed -i 's/rho/0.05/g' ex4.2/gas/input.gas
 sed -i 's/rcut/5.0/g' ex4.2/gas/input.gas
 sed -i 's/delta/0.0005/g' ex4.2/gas/input.gas
-sed -i 's/nstep/100000/g' ex4.2/gas/input.gas
+sed -i 's/nstep/1000/g' ex4.2/gas/input.gas
 sed -i 's/iprint/100/g' ex4.2/gas/input.gas
 sed -i 's/measure_time_interval/1/g' ex4.2/gas/input.gas
-sed -i 's/n_blocks/100/g' ex4.2/gas/input.gas
+sed -i 's/n_blocks/10/g' ex4.2/gas/input.gas
 
 cp code/input.dummy ex4.2/liquid/input.liquid
 sed -i 's/temp/1.1/g' ex4.2/liquid/input.liquid
@@ -80,10 +80,10 @@ sed -i 's/npart/108/g' ex4.2/liquid/input.liquid
 sed -i 's/rho/0.8/g' ex4.2/liquid/input.liquid
 sed -i 's/rcut/2.5/g' ex4.2/liquid/input.liquid
 sed -i 's/delta/0.0005/g' ex4.2/liquid/input.liquid
-sed -i 's/nstep/100000/g' ex4.2/liquid/input.liquid
+sed -i 's/nstep/1000/g' ex4.2/liquid/input.liquid
 sed -i 's/iprint/100/g' ex4.2/liquid/input.liquid
 sed -i 's/measure_time_interval/1/g' ex4.2/liquid/input.liquid
-sed -i 's/n_blocks/100/g' ex4.2/liquid/input.liquid
+sed -i 's/n_blocks/10/g' ex4.2/liquid/input.liquid
 
 cp code/input.dummy ex4.2/solid/input.solid
 sed -i 's/temp/0.8/g' ex4.2/solid/input.solid
@@ -91,10 +91,10 @@ sed -i 's/npart/108/g' ex4.2/solid/input.solid
 sed -i 's/rho/1.1/g' ex4.2/solid/input.solid
 sed -i 's/rcut/2.2/g' ex4.2/solid/input.solid
 sed -i 's/delta/0.0005/g' ex4.2/solid/input.solid
-sed -i 's/nstep/100000/g' ex4.2/solid/input.solid
+sed -i 's/nstep/1000/g' ex4.2/solid/input.solid
 sed -i 's/iprint/100/g' ex4.2/solid/input.solid
 sed -i 's/measure_time_interval/1/g' ex4.2/solid/input.solid
-sed -i 's/n_blocks/100/g' ex4.2/solid/input.solid
+sed -i 's/n_blocks/10/g' ex4.2/solid/input.solid
 
 for state in solid liquid gas
 do

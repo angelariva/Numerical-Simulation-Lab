@@ -96,11 +96,7 @@ MolDynMC::MolDynMC(std::string simParameters, std::string initial_configuration,
 
   bin_size = (box/2.0)/(double)nbins;
 
-  std::ofstream binning("results/binning.dat");
-  for(unsigned int i=0; i<nbins; ++i) {
-    binning << i*bin_size+bin_size/2. << std::endl;
-  }
-  binning.close();
+  Binn.open("results/binning.dat");
 
   histo_walker.resize(nbins);
   histo_block_average.resize(nbins);
@@ -300,17 +296,16 @@ void MolDynMC::Averages(unsigned int iblk) {
   stima_pres = rho * temp + (block_average.at("pressure")/blk_norm + ptail * (double)npart) / vol;
   glob_average.at("pressure") += stima_pres;
   glob_average2.at("pressure") += stima_pres*stima_pres;
-  err_pres = Error(glob_average.at("pressure"), glob_average.at("pressure"), iblk);
-
+  err_pres = Error(glob_average.at("pressure"), glob_average2.at("pressure"), iblk);
   //Potential energy per particle
   Epot << " " << iblk <<  " " << stima_pot << " "
-       << glob_average.at("pressure")/(double)iblk << " " << err_pot
+       << glob_average.at("energy")/(double)iblk << " " << err_pot
        << std::endl;
 
   //Pressure
   Pres << " " << iblk <<  " " << stima_pres << " "
-  << glob_average.at("pressure")/(double)iblk << " " << err_pres
-  << std::endl;
+       << glob_average.at("pressure")/(double)iblk << " " << err_pres
+       << std::endl;
 
   // err_g
   double stima_g; //, err_g;
@@ -322,7 +317,8 @@ void MolDynMC::Averages(unsigned int iblk) {
         err_g.push_back(Error(histo_glob_average[i], histo_glob_average2[i],iblk));
     }
     Gerr << std::endl;
-
+    Gave << std::endl;
+    Binn << std::endl;
   //g(r)
   double norm = 0.; // *(4.*M_PI/3.);
   for(auto & it : histo_glob_average) norm += it;
@@ -332,6 +328,9 @@ void MolDynMC::Averages(unsigned int iblk) {
 
   for(auto & it : err_g) Gerr << it/(norm)<< " ";
   Gerr << std::endl;
+
+  for(unsigned int i=0; i<nbins; ++i) Binn << i*bin_size+bin_size/2. << " ";
+  Binn << std::endl;
 
   std::cout << "----------------------------" << std::endl << std::endl;
 

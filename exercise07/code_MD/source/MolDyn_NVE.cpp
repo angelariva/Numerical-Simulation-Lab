@@ -5,7 +5,6 @@ using namespace std;
 MolecularDynamics::MolecularDynamics(std::string simParameters, std::string configFile) {
 
   Input(simParameters);
-  keys = {"energy", "pressure"};
   // Read initial configuration from the configuration file
   // we are starting from scratch our simulation in this CONSTRUCTOR
   cout << "Read initial configuration from file " + configFile << endl << endl;
@@ -57,18 +56,10 @@ MolecularDynamics::MolecularDynamics(std::string simParameters, std::string conf
        zold[i] = Pbc(z[i] - vz[i] * delta);
    }
 
-   histo.resize(nbins);
-   for(auto & it : histo){
-     it.resize(n_blocks);
-     std::fill(it.begin(), it.end(), 0.);
-   }
 }
 
-MolecularDynamics::MolecularDynamics(std::string simParameters,
-                                     std::string configFile,
-                                     std::string oldConfigFile) {
+MolecularDynamics::MolecularDynamics(std::string simParameters, std::string configFile, std::string oldConfigFile) {
   Input(simParameters);
-  keys = {"energy", "pressure"};
   // Read initial configuration from the configuration file (final in this case!)
   cout << "Read initial configuration from file " + configFile << endl << endl;
 
@@ -114,7 +105,6 @@ MolecularDynamics::MolecularDynamics(std::string simParameters,
 
    double fs = sqrt(temp / stima_temp);   // fs = velocity scale factor
    cout << "scaling factor = " << fs << endl;
-
    // upadating velocities and positions
    for (unsigned int i=0; i<npart; ++i) {
        vx[i] *= fs;
@@ -135,11 +125,6 @@ MolecularDynamics::MolecularDynamics(std::string simParameters,
 
    }
 
-   histo.resize(nbins);
-   for(auto & it : histo){
-     it.resize(n_blocks);
-     std::fill(it.begin(), it.end(), 0.);
-   }
 }
 
 MolecularDynamics::~MolecularDynamics() {
@@ -206,6 +191,7 @@ void MolecularDynamics::Input(std::string simParameters) {
   ReadInput >> measure_time_interval;
   cout << "Measures performed every " << measure_time_interval <<
   " time steps." << endl;
+  unsigned int n_blocks;
   ReadInput >> n_blocks;
   std::cout <<"Statistical error computed with "<< n_blocks << " blocks." << endl << endl;
 
@@ -230,6 +216,15 @@ void MolecularDynamics::Input(std::string simParameters) {
   block_size=(nstep/measure_time_interval)/n_blocks;
   iblock=0;
   imeasure=0;
+  bin_size = (box/2.0)/(double)nbins;
+
+  Binn.open("results/binning.dat");
+
+  histo.resize(nbins);
+  for(auto & el : histo) {
+    el.resize(n_blocks);
+    std::fill(el.begin(), el.end(), 0.);
+  }
 }
 
 
@@ -249,8 +244,7 @@ void MolecularDynamics::ConfFinal(std::string filename) const {
   cout << "Print configuration to " + filename << endl;
   WriteConf.open(filename);
 
-  for(unsigned int i=0; i<npart; i++)
-  WriteConf << x[i]/box << " " << y[i]/box << " " << z[i]/box << endl;
+  for(unsigned int i=0; i<npart; i++) WriteConf << x[i]/box << " " << y[i]/box << " " << z[i]/box << endl;
   WriteConf.close();
 }
 
@@ -310,13 +304,13 @@ void MolecularDynamics::Force() {
 void MolecularDynamics::Measure(){
   //Properties measurement
   double v, t;
-  double dx, dy, dz, dr;
+  double dx, dy, dz, dr, r;
 
   v = 0.0; //reset observables
   t = 0.0;
   stima_press = 0.;
   //cycle over pairs of particles
-  for (unsigned int i=0; i<npart-1; ++i){
+  for (unsigned int i=0; i<npart-1; ++i) {
     for (unsigned int j=i+1; j<npart; ++j){
 
      dx = Pbc( xold[i] - xold[j] ); // here I use old configurations [old = r(t)]
@@ -325,8 +319,6 @@ void MolecularDynamics::Measure(){
 
      dr = dx*dx + dy*dy + dz*dz;
      dr = sqrt(dr);
-
-     double r;
      //update of the histogram of g(r)
      for (unsigned int k=0; k<nbins; ++k){
        if(dr>bin_size*k and dr<bin_size*(k+1)){
@@ -377,7 +369,9 @@ void MolecularDynamics::BlockingResults() {
   for(auto &el : est_etot) el /= block_size;
   for(auto &el : est_press) el /= block_size;
   for(auto &el : histo) {
-    for(auto & k : el) k /= block_size;
+    for(auto & k : el) {
+      k /= block_size;
+    }
   }
 
   vector<double> pot_err = blocking_error(est_pot);
@@ -386,47 +380,59 @@ void MolecularDynamics::BlockingResults() {
   vector<double> etot_err = blocking_error(est_etot);
   vector<double> press_err = blocking_error(est_press);
   std::vector<std::vector<double> > histo_err(histo.size());
-  for (unsigned int i=0; i<histo.size(); i++){
+  for (unsigned int i=0; i<histo.size(); ++i) {
     histo_err[i]=blocking_error(histo[i]);
   }
 
   Gerr.open("results/gerr.dat"),
   Gave.open("results/gave.dat");
 
-  for(unsigned int i=0; i<histo[0].size();i++) {
-    for(unsigned j = 0; j<histo.size(); ++j) {
-      Gave <<histo[j][i] << " ";
+  for(unsigned int i = 0; i<histo[0].size(); ++i) {
+    for(unsigned int j = 0; j<histo.size(); ++j) {
+      Gave << histo[j][i] << " ";
       Gerr << histo_err[j][i] << " ";
     }
-    Gave << std::endl;
-    Gerr << std::endl;
+    Gave << endl;
+    Gerr << endl;
   }
+
+  for(unsigned int i=0; i<nbins; ++i) {
+    double a;
+    a = i*bin_size+bin_size/2.;
+    Binn << a << " ";
+  }
+  Binn << endl;
   Gerr.close();
   Gave.close();
 
   ofstream out("results/ave_epot.dat");
-  for(unsigned int i=0; i<est_pot.size(); ++i)
-  out << i << " " << est_pot[i] << " " << pot_err[i] << endl;
+  for(unsigned int i=0; i<est_pot.size(); ++i) {
+    out << i << " " << est_pot[i] << " " << pot_err[i] << endl;
+  }
   out.close();
 
   out.open("results/ave_ekin.dat");
-  for(unsigned int i=0; i<est_kin.size(); ++i)
+  for(unsigned int i=0; i<est_kin.size(); ++i) {
      out << i << " " << est_kin[i] << " " << kin_err[i] << endl;
+  }
   out.close();
 
   out.open("results/ave_etot.dat");
-  for(unsigned int i=0; i<est_etot.size(); ++i)
+  for(unsigned int i=0; i<est_etot.size(); ++i) {
      out << i << " " << est_etot[i] << " " << etot_err[i] << endl;
+  }
   out.close();
 
   out.open("results/ave_temp.dat");
-  for(unsigned int i=0; i<est_temp.size(); ++i)
+  for(unsigned int i=0; i<est_temp.size(); ++i) {
      out << i << " " << est_temp[i] << " " << temp_err[i] << endl;
+  }
   out.close();
 
   out.open("results/ave_press.dat");
-  for(unsigned int i=0; i<est_press.size(); ++i)
+  for(unsigned int i=0; i<est_press.size(); ++i) {
      out << i << " " << est_press[i] << " " << press_err[i] << endl;
+   }
   out.close();
 
 }
@@ -445,11 +451,12 @@ void MolecularDynamics::RunSimulation() {
   // "config.final".
   for (unsigned int istep=1; istep<nstep; ++istep) {
       Move();
-      if(istep % iprint ==0)
+      if(istep % iprint ==0){
           cout << "Number of time-steps: " << istep << endl;
+          ConfXYZ(nconf);
+        }
       if(istep % measure_time_interval == 0) {
             Measure();
-            ConfXYZ(nconf);
             nconf++;
         }
   }

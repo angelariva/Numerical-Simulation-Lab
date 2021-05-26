@@ -1,1 +1,13 @@
 LSN_exercises_delivery
+
+
+Possible problems:
+- N.B. When executing one of the the simulations (in exercise07), 
+  I incurred in the error:
+
+	*** stack smashing detected ***: terminated
+	Aborted (core dumped)
+
+  A `make clean` fixed it. It could be a good idea to give a `make clean`
+  before compiling with `make` anyway, just in case!
+

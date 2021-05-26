@@ -1,4 +1,11 @@
 From shell, inside _code_ directory:
+- N.B. When executing the simulation, I incurred in the error:
+
+	*** stack smashing detected ***: terminated
+	Aborted (core dumped)
+
+  A `make clean` fixed it. It could be a good idea to give a `make clean`
+  anyway, just in case!
 - To compile: `make`
 
 To obtain the results required in the exercise, from shell,

@@ -3,13 +3,13 @@
 0.05
 5.0
 7.5
-3000
-1
+2000
+20
 
   ReadInput >> 1.2;
   ReadInput >> 108;
   ReadInput >> 0.05;
   ReadInput >> 5.0;
   ReadInput >> 7.5;
-  ReadInput >> 3000;
-  ReadInput >> 1;
+  ReadInput >> 2000;
+  ReadInput >> 20;

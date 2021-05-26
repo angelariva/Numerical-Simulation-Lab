@@ -77,6 +77,7 @@ sed -i 's/n_blocks/20/g' code_MC/input.solid
 
 for state in solid liquid gas
 do
+  cp code_MC/input.$state ex7.2/$state/input.$state
   cd ex7.2/$state
   ./main --restart input.$state --instant
   cd ..

@@ -1,0 +1,15 @@
+1.2
+108
+0.05
+5.0
+7.5
+200
+10
+
+  ReadInput >> temp;
+  ReadInput >> npart;
+  ReadInput >> rho;
+  ReadInput >> rcut;
+  ReadInput >> delta;
+  ReadInput >> nstep;
+  ReadInput >> n_blocks;

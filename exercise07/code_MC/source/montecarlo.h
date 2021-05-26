@@ -41,7 +41,7 @@ private:
   const unsigned int nbins = 100;
   double bin_size;
 
-  std::ofstream Gerr, Gave, Epot, Pres;
+  std::ofstream Gerr, Gave, Epot, Pres, Binn;
   std::ofstream ist_pot;
   std::ofstream ist_pres;
 

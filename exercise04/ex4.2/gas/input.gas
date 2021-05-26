@@ -1,0 +1,19 @@
+1.2
+108
+0.05
+5.0
+0.0005
+1000
+100
+1
+10
+
+  ReadInput >> 1.2;
+  ReadInput >> 108;
+  ReadInput >> 0.05;
+  ReadInput >> 5.0;
+  ReadInput >> 0.0005;
+  ReadInput >> 1000;
+  ReadInput >> 100;
+  ReadInput >> 1;
+  ReadInput >> 10;

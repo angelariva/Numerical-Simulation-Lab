@@ -1,5 +1,13 @@
 From shell, inside `/code_MC` directory:
-- To compile: `make`;
+
+- N.B. When executing the simulation, I incurred in the error:
+
+	*** stack smashing detected ***: terminated
+	Aborted (core dumped)
+
+  A `make clean` fixed it. It would be a good idea to give a `make clean`
+  anyway, just in case!
+- To compile: `make`.
 
 From shell, inside _this_ directory:
 - To run the first program: `./ex1.sh`;
@@ -10,3 +18,8 @@ From shell, inside `/code_MD` directory:
 
 From shell, inside _this_ directory:
 - To run the third program: `./ex3.sh`.
+
+There's no need of changing the input files or creating new directories: 
+the scripts provided should take care of everything. The scripts set also 
+the values of the input file. To change the input values the best option 
+could be to modify the scripts themselves. The programs are independent. 
