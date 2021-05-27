@@ -316,17 +316,15 @@ void MolDynMC::Averages(unsigned int iblk) {
         histo_glob_average2[i] += stima_g*stima_g;
         err_g.push_back(Error(histo_glob_average[i], histo_glob_average2[i],iblk));
     }
-    Gerr << std::endl;
-    Gave << std::endl;
-    Binn << std::endl;
+
   //g(r)
   double norm = 0.; // *(4.*M_PI/3.);
   for(auto & it : histo_glob_average) norm += it;
 
-  for(auto & it : histo_glob_average) Gave << it/(norm) << " ";
+  for(auto & it : histo_glob_average) Gave << it/norm << " ";
   Gave << std::endl;
 
-  for(auto & it : err_g) Gerr << it/(norm)<< " ";
+  for(auto & it : err_g) Gerr << it/norm << " ";
   Gerr << std::endl;
 
   for(unsigned int i=0; i<nbins; ++i) Binn << i*bin_size+bin_size/2. << " ";
@@ -357,9 +355,8 @@ void MolDynMC::Measure(unsigned int istep) {
       //update of the histogram of g(r)
          for (unsigned int k=0; k<nbins; ++k){
              if(dr>bin_size*k and dr<=bin_size*(k+1)){
-//                  r=std::sqrt(x[j]*x[j]+y[j]*y[j]+z[j]*z[j]);
-                 histo_walker[k]+=3./(std::pow(dr+bin_size,3)-std::pow(dr,3))
-                     /(2.*M_PI);
+    //             r = std::sqrt(x[j]*x[j]+y[j]*y[j]+z[j]*z[j]);
+                 histo_walker[k] += 3./(std::pow(dr+bin_size,3)-std::pow(dr,3))/(2.*M_PI);
                  break;
              }
          }

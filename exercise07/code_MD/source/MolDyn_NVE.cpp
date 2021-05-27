@@ -304,7 +304,7 @@ void MolecularDynamics::Force() {
 void MolecularDynamics::Measure(){
   //Properties measurement
   double v, t;
-  double dx, dy, dz, dr, r;
+  double dx, dy, dz, dr;
 
   v = 0.0; //reset observables
   t = 0.0;
@@ -322,8 +322,8 @@ void MolecularDynamics::Measure(){
      //update of the histogram of g(r)
      for (unsigned int k=0; k<nbins; ++k){
        if(dr>bin_size*k and dr<bin_size*(k+1)){
-         r=std::sqrt(x[j]*x[j]+y[j]*y[j]+z[j]*z[j]);
-         histo[k][iblock]+=1./(std::pow(r+dr,3)-std::pow(r,3));
+    //     r=std::sqrt(x[j]*x[j]+y[j]*y[j]+z[j]*z[j]);
+         histo[k][iblock]+=3./(std::pow(bin_size+dr,3)-std::pow(dr,3))/(2.*M_PI);
          break;
        }
      }
@@ -387,21 +387,28 @@ void MolecularDynamics::BlockingResults() {
   Gerr.open("results/gerr.dat"),
   Gave.open("results/gave.dat");
 
+  std::vector<double> norm(histo[0].size());
+  std::fill(norm.begin(), norm.end(), 0.);
+  for(unsigned int j=0; j<norm.size(); ++j) {
+    for(unsigned int i=0; i<histo.size(); ++i){
+      norm[j] += histo[i][j];
+    }
+  //  cout << "DEBUG:    " <<norm[j] << endl;
+
+  }
+
   for(unsigned int i = 0; i<histo[0].size(); ++i) {
     for(unsigned int j = 0; j<histo.size(); ++j) {
-      Gave << histo[j][i] << " ";
-      Gerr << histo_err[j][i] << " ";
+      Gave << histo[j][i]/norm[i] << " ";
+      Gerr << histo_err[j][i]/norm[i] << " ";
+      double a = j*bin_size+bin_size/2.;
+      Binn << a << " ";
     }
+    Binn << endl;
     Gave << endl;
     Gerr << endl;
   }
 
-  for(unsigned int i=0; i<nbins; ++i) {
-    double a;
-    a = i*bin_size+bin_size/2.;
-    Binn << a << " ";
-  }
-  Binn << endl;
   Gerr.close();
   Gave.close();
 
