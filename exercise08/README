@@ -1,7 +1,7 @@
 From shell, inside _this_ directory:
 - to compile all the programs: `make`;
 - to run the fist program: `./ex1.sh`;
-- to run the second program (**[ROOT](https://root.cern/)** 
+- to run the second program ([ROOT](https://root.cern/) 
   is needed to compile & run): `./ex3.sh`.
 
 If you don't have ROOT installed on your computer, it is possible 
