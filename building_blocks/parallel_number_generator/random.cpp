@@ -8,6 +8,10 @@ _/    _/  _/_/_/  _/_/_/_/ email: Davide.Galli@unimi.it
 *****************************************************************
 *****************************************************************/
 
+#include <iostream>
+#include <fstream>
+#include <cmath>
+#include <cstdlib>
 #include "random.h"
 
 using namespace std;
@@ -26,11 +30,16 @@ void Random :: SaveSeed(){
   return;
 }
 
+double Random :: Gauss(double mean, double sigma) {
+   double s=Rannyu();
+   double t=Rannyu();
+   double x=sqrt(-2.*log(1.-s))*cos(2.*M_PI*t);
+   return mean + x * sigma;
+}
 
 double Random :: Rannyu(double min, double max){
    return min+(max-min)*Rannyu();
 }
-
 
 double Random :: Rannyu(void){
   const double twom12=0.000244140625;
@@ -69,79 +78,6 @@ void Random :: SetRandom(int * s, int p1, int p2){
 
   return;
 }
-
-void Random :: SetRandom(string primes, string seed){
-  int s[4];
-  int p1, p2;
-  ifstream Primes(primes);
-  if (Primes.is_open()) {
-    Primes >> p1 >> p2;
-  } else { cerr << "PROBLEM! Unable to open " << primes << endl; }
-  Primes.close();
-
-  ifstream input(seed);
-  string property;
-  if (input.is_open()) {
-    while(!input.eof()) {
-      input >> property;
-      if(property=="RANDOMSEED"){
-        input >> s[0] >> s[1] >> s[2] >> s[3];
-        this->SetRandom(s,p1,p2);
-      }
-    }
-    input.close();
-  } else std::cerr << "PROBLEM! Unable to open " << seed << '\n';
-}
-
-double Random :: Gauss(double mean, double sigma) {
-   double s=Rannyu();
-   double t=Rannyu();
-   double x=sqrt(-2.*log(1.-s))*cos(2.*M_PI*t);
-   return mean + x * sigma;
-}
-
-double Random :: Exp(double lambda) {
-  double rand=Rannyu();
-  return -log(1.-rand)/lambda;
-}
-
-double Random :: Lorentz(double gamm, double mu) {
-  double rand=Rannyu();
-  return mu + gamm*tan(M_PI*(rand - 0.5));
-}
-
-double Random :: Angle() {
-  double x, y, r;
-  do{
-    x=this->Rannyu();
-    y=this->Rannyu();
-    r = sqrt(x*x+y*y);
-  }while(r>1.);
-  return acos(x/r);
-}
-
-void Random :: SolidAngle(double& theta, double& phi) {
-  double x,y,z,r2;
-  do {
-    x = Rannyu(-1.,1.);
-    y = Rannyu(-1.,1.);
-    z = Rannyu(-1.,1.);
-    r2 = x*x+y*y+z*z;
-  } while (r2>=1.);
-  theta = acos(z/sqrt(r2));
-  if(y<0.) phi=-acos(x/(sqrt(r2)*sin(theta)));
-  else phi=acos(x/(sqrt(r2)*sin(theta)));
-}
-
-double Random :: AcceptReject(double (*f)(double), double max) {
-  double x, y;
-  do{
-    x = Rannyu();
-    y = Rannyu();
-  }while(f(x)/max<=y);
-  return x;
-}
-
 
 /****************************************************************
 *****************************************************************

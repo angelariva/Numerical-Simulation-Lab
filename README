@@ -13,3 +13,5 @@ Possible problems:
   A `make clean` fixed it. It could be a good idea to give a `make clean`
   before compiling with `make` anyway, just in case!
 
+In the directory "buildingblocks" one can find the code provided in classroom
+and the explanations of the exercises.

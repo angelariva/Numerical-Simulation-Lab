@@ -1,0 +1,15 @@
+From shell, inside _this_ directory:
+- to compile: `make`;
+- to run: `./ex1.sh`.
+
+If one wants to run the program independently the usage is:
+
+`./main [Npop] [Ngen] [shape]`
+
+
+The (mandatory) options to be inserted from command line are:
+- `[Npop]`:  # of individuals in the first generation; 
+-  `[Ngen]`:  # of generations; 
+- `[shape]`: shape of the world. The only two possibilities are:
+    - circumference; 
+    - square.

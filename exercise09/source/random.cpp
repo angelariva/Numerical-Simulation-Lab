@@ -31,6 +31,9 @@ double Random :: Rannyu(double min, double max){
    return min+(max-min)*Rannyu();
 }
 
+int Random :: RandInt(int min, int max){
+	return (int)Rannyu((double)min, (double)max + 1.);
+}
 
 double Random :: Rannyu(void){
   const double twom12=0.000244140625;
