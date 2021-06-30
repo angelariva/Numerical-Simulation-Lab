@@ -1,0 +1,16 @@
+------------------------------
+Genetic Algortithm
+32 cities on a square;
+Population of 1000 salesmen;
+Evolution of 200 generations. 
+
+Best Initial loss value: 25.6488
+Best final loss value: 9.85561
+------------------------------
+Simulated Annealing
+32 cities on a square;
+500 temperatures to be considered;
+1500 steps to be made for each temperature. 
+
+Initial loss value: 35.4166
+Final loss value: 9.85561

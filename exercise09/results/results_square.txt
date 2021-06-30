@@ -1,0 +1,7 @@
+------------------------------
+32 cities on a square;
+Population of 1000 salesmen;
+Evolution of 150 generations. 
+
+Best Initial loss value: 25.6488
+Best final loss value: 9.85561

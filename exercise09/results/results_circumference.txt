@@ -1,0 +1,7 @@
+------------------------------
+32 cities on a circumference;
+Population of 1000 salesmen;
+Evolution of 150 generations. 
+
+Best Initial loss value: 28.0603
+Best final loss value: 6.21109

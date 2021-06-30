@@ -1,0 +1,16 @@
+------------------------------
+Genetic Algortithm
+32 cities on a circumference;
+Population of 1000 salesmen;
+Evolution of 200 generations. 
+
+Best Initial loss value: 28.0603
+Best final loss value: 6.21109
+------------------------------
+Simulated Annealing
+32 cities on a circumference;
+500 temperatures to be considered;
+100 steps to be made for each temperature. 
+
+Initial loss value: 41.9986
+Final loss value: 6.21109

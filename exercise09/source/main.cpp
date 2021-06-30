@@ -1,3 +1,11 @@
+/*
+Angela Riva
+
+09.1)
+  This program solves the Travelling SalesMan Problem using
+  Genetic Algorithm.
+*/
+
 #include "TSP.h"
 
 using namespace std;
@@ -28,12 +36,9 @@ int main (int argc, char *argv[]){
     std::string shape = std::string(argv[3]);
 
   	ofstream cities("./results/cities_"+shape+".dat");
-  //	ofstream losses("./results/cost_"+shape+".dat");
-  //	ofstream losses_ave("./results/cost_ave_"+shape+".dat");
+    ofstream res("./results/results_"+shape+".txt");
 
   	Population pop(&rnd, shape, npop, ncit, cross);
-  	vector<path> appop(2);
-  	vector<path> popul(npop);
 
   	for(unsigned int i=0; i<ncit; ++i) {
   		cities << (pop.GetSalesMan(0).GetCities()[i]).first << "  "
@@ -51,9 +56,17 @@ int main (int argc, char *argv[]){
     cout << "Evolution of " << ngen << " generations. \n" << endl;
   	cout << "Best Initial loss value: " << pop.GetLosses()[npop - 1] << endl;
 
+    res << "------------------------------" << endl;
+    res << ncit << " cities on a " << shape << ";" << endl;
+    res << "Population of " << npop << " salesmen;" << endl;
+    res << "Evolution of " << ngen << " generations. \n" << endl;
+  	res << "Best Initial loss value: " << pop.GetLosses()[npop - 1] << endl;
+
+
     pop.Evolve(ngen, shape);
 
-  	cout << "Best final loss value: " << pop.GetLosses()[npop-1] << endl;
+  	cout << "Best final loss value: " << pop.GetLosses()[npop-1] << endl;  	
+  	res << "Best final loss value: " << pop.GetLosses()[npop-1] << endl;
 
   	for(unsigned int i=0; i<ncit; i++) {
   		cities << pop.GetSalesMan(npop-1).GetCities()[i].first << "  "

@@ -1,0 +1,23 @@
+From shell, inside _this_ directory:
+- to compile: `make`;
+- to run the first exercise: `./ex1.sh`;
+- to run the second exercise: `./ex1.sh`.
+
+To run the first program run from shell:
+
+	./main [Ntemp] [Nstep] [shape] 
+
+This program solves the Travelling SalesMan Problem using Genetic Algorithm. 
+The (mandatory) options to be inserted from command line are: 
+	 [Ntemp]:  # of temperatures to be considered; 
+	 [Nstep]:  # of steps to be made for each temperature; 
+	 [shape]: shape of the world. The only two possibilities are: 
+		  - circumference; 
+ 		  - square.
+
+**NB: `mpi.h` libraries need to be installed to run the second program!**
+To run the second program independently, run from shell, inside `ex10.2` directory:
+
+	mpirun --use-hwthread-cpus  ./main [Npop] [Ngen] [shape]
+
+

@@ -1,17 +1,34 @@
 LSN_exercises_delivery
 
-AGGIUNGERE CODICE DATO CON GLI ESERCIZI
-SPECIFICARE QUELLO CHE HO SCRITTO IO E QUELLO CHE HO USATO 
+Angela Riva
+
+a.a. 2020/21
+
+Course of Numerical Simulation Laboratory,
+held by Professor Davide E. Galli
+Università degli Studi di Milano
+Physics faculty
+
+These are my projects. In the directory "buildingblocks" one can find 
+the code provided in the classroom and the assignments of the exercises.
+I took a used a lot of that code to build my own programs, that can be 
+found in the directories 'exercise01' etc.
 
 Possible problems:
-- N.B. When executing one of the the simulations (in exercise07), 
-  I incurred in the error:
+
+- N.B.	When executing one of the the simulations (in exercise07), 
+	I incurred in the error:
 
 	*** stack smashing detected ***: terminated
 	Aborted (core dumped)
 
-  A `make clean` fixed it. It could be a good idea to give a `make clean`
-  before compiling with `make` anyway, just in case!
+	A `make clean` fixed it. It could be a good idea to give a `make clean`
+	before compiling with `make` anyway, just in case!
+  
+- N.B.	When running the programs (in the scripts, e.g. 'ex1.sh') I usually
+	preventively deleted the old results. If one desires to keep them, 
+	I suggest changing the names of the directories where they are stored
+	from 'results' to 'results_backup' or something like that.
 
-In the directory "buildingblocks" one can find the code provided in classroom
-and the explanations of the exercises.
+- N.B.	In some exercises there are requirements/external libraries to be
+	installed; I have specified what is needed in the related README files.
