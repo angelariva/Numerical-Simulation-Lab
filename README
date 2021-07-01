@@ -15,6 +15,10 @@ I used a lot of that code to build my own programs, that can be
 found in the directories 'exercise01' etc. For the comments in the jupyter
 notebooks I heavily relied on the lecture notes of the same course.
 
+In each directory you can find a README that explains how to compile & execute 
+the programs. Each program corresponds to one of the mandatory exercise of the 
+laboratory course.
+
 Possible problems:
 
 - N.B.	When executing one of the the simulations (in exercise07), 
