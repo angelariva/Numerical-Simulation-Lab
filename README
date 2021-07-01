@@ -11,8 +11,9 @@ Physics faculty
 
 These are my projects. In the directory "buildingblocks" one can find 
 the code provided in the classroom and the assignments of the exercises.
-I took a used a lot of that code to build my own programs, that can be 
-found in the directories 'exercise01' etc.
+I used a lot of that code to build my own programs, that can be 
+found in the directories 'exercise01' etc. For the comments in the jupyter
+notebooks I heavily relied on the lecture notes of the same course.
 
 Possible problems:
 
